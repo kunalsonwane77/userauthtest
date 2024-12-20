@@ -1,6 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Userauth() {
+
+let [user,setuser]=useState([])
+
+let [email,setemail]=useState("")
+
+
+
+
+
+async function userdata() {
+  let data= await fetch("http://localhost:3000/userdata")
+  let actualdata = await data.json()
+   
+  setuser(actualdata)
+
+  // console.log(user)
+}
+
+useEffect(()=>{
+  userdata()
+},[])
+
+
+
+
+
+
 
   let initaalval={
     name:"",
@@ -22,13 +49,45 @@ function handlechange(e){
 
 }
 
-function submitdata(){
+ async function submitdata(){
   console.log(signup)
   setsignup("")
   alert("sign up succesfull")
   setislogin(true)
+
+
+
+  await fetch ("http://localhost:3000/userdata",{
+    method:"POST",
+    body:JSON.stringify(signup),
+    headers:{ 
+      "Contenst-Type": "application/json"
+    }
+   })
 }
 
+
+
+
+
+function signin(){
+
+  let check = false
+
+  user.map((el)=>{
+   if(el.email==email){
+    alert("login success")
+    check=true
+    return
+   }
+  })
+
+  
+  if(!check){
+    alert("plese enter correct email or signup")
+  }
+  
+}
 
 
   return (
@@ -38,10 +97,10 @@ function submitdata(){
 <div className='loginsignup' style={{display:islogin?"block":"none"}}>
        
 
-        <input type="text" name="" id="" placeholder='enete email id' />
+        <input type="text" name="" id="" placeholder='enete email id' onChange={(e)=>setemail(e.target.value)} />
         <input type="text" name="" id="" placeholder='enter password' />
 
-        <button>submit</button>
+        <button onClick={signin}>submit</button>
         
     </div>
     
@@ -59,6 +118,7 @@ function submitdata(){
 
     <button onClick={()=>setislogin(true)}>login</button> <button onClick={()=>setislogin(false)}>signup</button>
       
+
 
 </div>
 
